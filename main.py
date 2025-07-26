@@ -2,9 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.storage.database import create_db
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, admin, video, update
-# from fastapi_app.core.exception_handlers import handle_validation_exception, handle_httpexception
-# from fastapi.exceptions import HTTPException, RequestValidationError
+from app.routers import auth, admin, video, update, event
 
 
 @asynccontextmanager
@@ -29,9 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# from fastapi_app.routers.auth import auth_router
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
-# app.add_exception_handler(HTTPException, handle_httpexception)
-# app.add_exception_handler(RequestValidationError, handle_validation_exception)
-# app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
+app.include_router(video.router, prefix="/tvs", tags=["TV"])
+app.include_router(update.router, prefix="/updates", tags=["Live Update"])
+app.include_router(event.router, prefix="/events", tags=["Event"])

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlmodel import Session
 from typing import Annotated
 
@@ -90,4 +90,8 @@ def delete_event(
     event_id: int,
     db: Annotated[Session, Depends(get_db)]
 ):
-    return admin_crud.delete_event(db, event_id)
+    message = admin_crud.delete_event(db, event_id)
+    if message:
+        return message
+
+    raise HTTPException(status_code=404, detail="Hero not found")
