@@ -1,6 +1,75 @@
 from sqlmodel import Session, select
-from app.storage.models import Admin
+from app.storage.models import Admin, Event, LiveUpdate, Video, Comment, Like
+from app.schemas.event import EventBase
+from app.schemas.update import LiveUpdateCreate
 
 
 def get_admin(db: Session, username: str) -> Admin | None:
     return db.exec(select(Admin).where(Admin.username == username)).first()
+
+
+def create_event(db: Session, event: EventBase) -> Event:
+    event = Event.model_validate(event)
+    db.add(event)
+    db.commit()
+    db.refresh(event)
+
+    return event
+
+
+def add_update(db: Session, event_id: int, update_data: LiveUpdateCreate) -> LiveUpdate:
+    update = LiveUpdate(**update_data.model_dump(), event_id=event_id)
+    db.add(update)
+    db.commit()
+    db.refresh(update)
+
+    return update
+
+
+def upload_video(db: Session, video: Video) -> Video:
+    db.add(video)
+    db.commit()
+    db.refresh(video)
+
+    return video
+
+
+def get_like_count_for_update(db: Session, update_id: int) -> int:
+    return db.exec(select(Like).where(Like.update_id == update_id)).all().count()
+
+
+def get_like_count_for_video(db: Session, video_id: int) -> int:
+    return db.exec(select(Like).where(Like.video_id == video_id)).all().count()
+
+
+def get_comments_for_update(db: Session, update_id: int) -> list[Comment]:
+    return db.exec(select(Comment).where(Comment.update_id == update_id)).all()
+
+
+def get_comments_for_video(db: Session, video_id: int) -> list[Comment]:
+    return db.exec(select(Comment).where(Comment.video_id == video_id)).all()
+
+
+# def get_all_views(db: Session) -> dict:
+#     return {"total_views": sum(v.views for v in db.exec(select(Video)).all())}
+
+
+# def get_all_comments(db: Session) -> list[Comment]:
+#     return db.exec(select(Comment)).all()
+
+
+# def get_all_likes(db: Session) -> dict:
+#     return {
+#         "video_likes": db.exec(select(Like).where(Like.video_id != None)).count(),
+#         "update_likes": db.exec(select(Like).where(Like.update_id != None)).count(),
+#     }
+
+
+def delete_event(db: Session, event_id: int):
+    event = db.get(Event, event_id)
+    if event:
+        db.delete(event)
+        db.commit()
+
+        return {"message": "Event deleted"}
+    return {"message": "Event not found"}

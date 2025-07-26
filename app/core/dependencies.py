@@ -25,7 +25,7 @@ async def get_db() -> AsyncGenerator[Session, None]:
         db.close()
 
 
-async def get_current_admin(
+async def verify_admin(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[Session, Depends(get_db)]
 ):
@@ -46,5 +46,3 @@ async def get_current_admin(
     admin = get_admin(db=db, username=username)
     if admin is None:
         raise credentials_exception
-
-    return admin
