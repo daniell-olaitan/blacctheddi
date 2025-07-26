@@ -6,6 +6,15 @@ settings = get_settings()
 engine = create_engine(settings.database_uri)
 
 
+class Admin(SQLModel, table=True):
+    __tablename__ = 'admins'
+
+    id: int | None = Field(default=None, primary_key=True)
+    username: str
+    password: str
+    is_admin: bool = True
+
+
 class Event(SQLModel, table=True):
     __tablename__ = 'events'
 
