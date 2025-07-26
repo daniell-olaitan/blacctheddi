@@ -1,0 +1,68 @@
+from sqlmodel import SQLModel, Field, create_engine, Relationship
+from config import get_settings
+from datetime import datetime, timezone
+
+settings = get_settings()
+engine = create_engine(settings.database_uri)
+
+
+class Event(SQLModel, table=True):
+    __tablename__ = 'events'
+
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    status: str = 'live'  # live or ended
+
+    updates: list["LiveUpdate"] = Relationship(back_populates="event", cascade_delete=True)
+
+
+class LiveUpdate(SQLModel, table=True):
+    __tablename__ = 'liveupdates'
+
+    id: int | None = Field(default=None, primary_key=True)
+    event_id: int = Field(foreign_key="events.id", ondelete='CASCADE')
+    title: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    details: str
+
+    event: Event | None = Relationship(back_populates="updates")
+    comments: list["Comment"] = Relationship(back_populates="update", cascade_delete=True)
+    likes: list["Like"] = Relationship(back_populates="update", cascade_delete=True)
+
+
+class Video(SQLModel, table=True):
+    __tablename__ = 'videos'
+
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    views: int = 0
+    url: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    comments: list["Comment"] = Relationship(back_populates="video", cascade_delete=True)
+    likes: list["Like"] = Relationship(back_populates="video", cascade_delete=True)
+
+
+class Comment(SQLModel, table=True):
+    __tablename__ = 'comments'
+
+    id: int | None = Field(default=None, primary_key=True)
+    content: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    update_id: int | None = Field(default=None, foreign_key="liveupdates.id", ondelete='CASCADE')
+    video_id: int | None = Field(default=None, foreign_key="videos.id", ondelete='CASCADE')
+
+    update: LiveUpdate | None = Relationship(back_populates="comments")
+    video: Video | None = Relationship(back_populates="comments")
+
+
+class Like(SQLModel, table=True):
+    __tablename__ = 'likes'
+
+    id: int | None = Field(default=None, primary_key=True)
+    update_id: int | None = Field(default=None, foreign_key="liveupdates.id", ondelete='CASCADE')
+    video_id: int | None = Field(default=None, foreign_key="videos.id", ondelete='CASCADE')
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    update: LiveUpdate | None = Relationship(back_populates="likes")
+    video: Video | None = Relationship(back_populates="likes")
