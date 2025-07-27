@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel, Field
 from datetime import timezone, datetime
+from pydantic import BaseModel
 
 
 class VideoBase(SQLModel):
@@ -13,6 +14,6 @@ class VideoPublic(VideoBase):
     id: str
 
 
-class VideoCombined:
+class VideoCombined(BaseModel):
     video: VideoPublic
     related_videos: list[VideoPublic]
