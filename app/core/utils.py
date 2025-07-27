@@ -38,32 +38,32 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 # File Upload
 
-r2_client = boto3.client(
-    "s3",
-    endpoint_url=settings.r2_endpoint_url_s3,
-    aws_access_key_id=settings.r2_access_key_id,
-    aws_secret_access_key=settings.r2_secret_access_key
-)
+# r2_client = boto3.client(
+#     "s3",
+#     endpoint_url=settings.r2_endpoint_url_s3,
+#     aws_access_key_id=settings.r2_access_key_id,
+#     aws_secret_access_key=settings.r2_secret_access_key
+# )
 
 
-def store_file(file: UploadFile, file_type: str = 'videos') -> str:
-    try:
-        # Generate unique key with folder prefix
-        key = f"{file_type}/{uuid4()}_{file.filename}"
+# def store_file(file: UploadFile, file_type: str = 'videos') -> str:
+#     try:
+#         # Generate unique key with folder prefix
+#         key = f"{file_type}/{uuid4()}_{file.filename}"
 
-        # Upload to R2
-        r2_client.upload_fileobj(
-            Fileobj=file.file,
-            Bucket=settings.r2_bucket_name,
-            Key=key,
-            ExtraArgs={"ContentType": file.content_type}
-        )
+#         # Upload to R2
+#         r2_client.upload_fileobj(
+#             Fileobj=file.file,
+#             Bucket=settings.r2_bucket_name,
+#             Key=key,
+#             ExtraArgs={"ContentType": file.content_type}
+#         )
 
-        public_url = f"{settings.r2_public_url}/{key}"
-        return public_url
+#         public_url = f"{settings.r2_public_url}/{key}"
+#         return public_url
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 
 # Local storage
