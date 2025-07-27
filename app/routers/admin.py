@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, UploadFile, Form, File
 from sqlmodel import Session
 from typing import Annotated
-
 from app.core.dependencies import verify_admin, get_db
 from app.crud import admin as admin_crud
 from app.schemas.video import VideoPublic
 from app.schemas.event import EventBase, EventPublic
 from app.schemas.update import LiveUpdateCreate, LiveUpdatePublic
 from app.schemas.comment import CommentPublic
+from app.schemas.common import StatusJSON
 
 router = APIRouter(dependencies=[Depends(verify_admin)])
 
@@ -90,5 +90,5 @@ def get_video_comments(
 def close_and_delete_event(
     event_id: int,
     db: Annotated[Session, Depends(get_db)]
-):
+) -> StatusJSON:
     return admin_crud.delete_event(db, event_id)

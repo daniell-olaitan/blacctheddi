@@ -1,5 +1,6 @@
 from sqlmodel import Session
 from app.storage.models import Like
+from app.schemas.common import StatusJSON
 
 
 def unlike_item(db: Session, like_id: int) -> dict:
@@ -8,4 +9,4 @@ def unlike_item(db: Session, like_id: int) -> dict:
         db.delete(event)
         db.commit()
 
-    return {"message": "Unliked"}
+    return StatusJSON(status='unliked')

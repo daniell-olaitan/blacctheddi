@@ -3,6 +3,7 @@ from app.storage.models import Admin, Event, LiveUpdate, Video, Comment, Like
 from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateCreate
 from fastapi import UploadFile
+from app.schemas.common import StatusJSON
 
 
 def get_admin(db: Session, username: str) -> Admin | None:
@@ -74,4 +75,4 @@ def delete_event(db: Session, event_id: int) -> dict:
         db.delete(event)
         db.commit()
 
-    return {"message": "Event deleted"}
+    return StatusJSON(status='ok')
