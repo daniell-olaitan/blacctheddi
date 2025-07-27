@@ -21,4 +21,4 @@ def like_update(db: Session, update_id: int) -> dict:
     db.add(like)
     db.commit()
 
-    return {"message": "Liked"}
+    return like

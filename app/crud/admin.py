@@ -65,11 +65,10 @@ def get_comments_for_video(db: Session, video_id: int) -> list[Comment]:
 #     }
 
 
-def delete_event(db: Session, event_id: int) -> dict | None:
+def delete_event(db: Session, event_id: int) -> dict:
     event = db.get(Event, event_id)
     if event:
         db.delete(event)
         db.commit()
 
-        return {"message": "Event deleted"}
-    return None
+    return {"message": "Event deleted"}

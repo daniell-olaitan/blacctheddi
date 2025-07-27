@@ -6,7 +6,7 @@ from datetime import timedelta, timezone, datetime
 
 ALGORITHM = "HS256"
 
-pwd_context = CryptContext(schemes=['bcrypt'], decrecated='auto')
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

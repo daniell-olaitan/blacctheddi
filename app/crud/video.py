@@ -7,7 +7,7 @@ def get_recent_videos(db: Session) -> list[Video]:
     return db.exec(select(Video).order_by(Video.timestamp.desc())).all()
 
 
-def get_video_and_increment_views(db: Session, video_id: int) -> Video:
+def get_video_and_increment_views(db: Session, video_id: int) -> dict:
     video = db.get(Video, video_id)
     if video:
         video.views += 1
@@ -15,7 +15,15 @@ def get_video_and_increment_views(db: Session, video_id: int) -> Video:
         db.commit()
         db.refresh(video)
 
-    return video
+        videos = db.exec(select(Video).order_by(Video.views.desc())).all()
+        related_videos = [v for v in videos if v.id != video_id][:5]
+
+        return {
+            "video": video,
+            "related_videos": related_videos
+        }
+
+    return None
 
 
 def get_like_count_for_video(db: Session, video_id: int) -> int:
@@ -50,4 +58,4 @@ def like_video(db: Session, video_id: int) -> dict:
     db.add(like)
     db.commit()
 
-    return {"message": "Liked"}
+    return like

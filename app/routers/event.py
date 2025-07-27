@@ -7,7 +7,7 @@ from app.crud import event as events_crud
 from app.schemas.event import EventPublic
 from app.schemas.update import LiveUpdatePublic
 
-router = APIRouter(prefix="/events", tags=["Events"])
+router = APIRouter()
 
 
 @router.get("/")

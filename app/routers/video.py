@@ -5,8 +5,9 @@ from app.core.dependencies import get_db
 from app.crud import video as videos_crud
 from app.storage.models import Video
 from app.schemas.comment import CommentPublic
+from app.schemas.like import LikePublic
 
-router = APIRouter(prefix="/videos", tags=["Videos"])
+router = APIRouter()
 
 
 @router.get("/")
@@ -44,14 +45,6 @@ def get_video_views(
     return videos_crud.get_view_count_for_video(db, video_id)
 
 
-@router.get("/{video_id}/related")
-def get_related_videos(
-    video_id: int,
-    db: Annotated[Session, Depends(get_db)]
-) -> list[Video]:
-    return videos_crud.get_related_videos(db, video_id)
-
-
 @router.post("/{video_id}/comments")
 def comment_on_video(
     video_id: int,
@@ -65,5 +58,5 @@ def comment_on_video(
 def like_video(
     video_id: int,
     db: Annotated[Session, Depends(get_db)]
-) -> dict:
+) -> LikePublic:
     return videos_crud.like_video(db, video_id)

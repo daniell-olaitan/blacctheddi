@@ -9,7 +9,7 @@ from app.schemas.event import EventBase, EventPublic
 from app.schemas.update import LiveUpdateCreate, LiveUpdatePublic
 from app.schemas.comment import CommentPublic
 
-router = APIRouter(prefix="/admin", tags=["Admin"], dependencies=[Depends(verify_admin)])
+router = APIRouter(dependencies=[Depends(verify_admin)])
 
 
 @router.post("/events")
@@ -86,12 +86,8 @@ def get_video_comments(
 
 
 @router.delete("/events/{event_id}")
-def delete_event(
+def close_and_delete_event(
     event_id: int,
     db: Annotated[Session, Depends(get_db)]
 ):
-    message = admin_crud.delete_event(db, event_id)
-    if message:
-        return message
-
-    raise HTTPException(status_code=404, detail="Hero not found")
+    return admin_crud.delete_event(db, event_id)

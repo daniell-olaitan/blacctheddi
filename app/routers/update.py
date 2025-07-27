@@ -5,8 +5,9 @@ from typing import Annotated
 from app.core.dependencies import get_db
 from app.crud import update as updates_crud
 from app.schemas.comment import CommentPublic
+from app.schemas.like import LikePublic
 
-router = APIRouter(prefix="/updates", tags=["Updates"])
+router = APIRouter()
 
 
 @router.post("/{update_id}/comments")
@@ -22,5 +23,5 @@ def comment_on_update(
 def like_update(
     update_id: int,
     db: Annotated[Session, Depends(get_db)]
-) -> dict:
+) -> LikePublic:
     return updates_crud.like_update(db, update_id)
