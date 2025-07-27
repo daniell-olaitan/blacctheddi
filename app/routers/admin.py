@@ -66,25 +66,11 @@ def get_video_comments(
     return admin_crud.get_comments_for_video(db, video_id)
 
 
-# @router.get("/views")
-# def get_all_view_counts(
-#     db: Annotated[Session, Depends(get_db)]
-# ) -> dict:
-#     return admin_crud.get_all_views(db)
-
-
-# @router.get("/comments")
-# def get_all_comments(
-#     db: Annotated[Session, Depends(get_db)]
-# ) -> list[CommentPublic]:
-#     return admin_crud.get_all_comments(db)
-
-
-# @router.get("/likes")
-# def get_all_likes(
-#     db: Annotated[Session, Depends(get_db)]
-# ) -> dict:
-#     return admin_crud.get_all_likes(db)
+@router.get("/analytics")
+def get_the_analytics(
+    db: Annotated[Session, Depends(get_db)]
+) -> dict:
+    return admin_crud.get_analytics(db)
 
 
 @router.delete("/events/{event_id}")

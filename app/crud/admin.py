@@ -4,6 +4,7 @@ from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateCreate
 from fastapi import UploadFile
 from app.schemas.common import StatusJSON
+from app.schemas.admin import Analytics
 from app.core.utils import store_file
 
 
@@ -66,19 +67,13 @@ def get_comments_for_video(db: Session, video_id: int) -> list[Comment]:
     return db.exec(select(Comment).where(Comment.video_id == video_id)).all()
 
 
-# def get_all_views(db: Session) -> dict:
-#     return {"total_views": sum(v.views for v in db.exec(select(Video)).all())}
-
-
-# def get_all_comments(db: Session) -> list[Comment]:
-#     return db.exec(select(Comment)).all()
-
-
-# def get_all_likes(db: Session) -> dict:
-#     return {
-#         "video_likes": db.exec(select(Like).where(Like.video_id != None)).count(),
-#         "update_likes": db.exec(select(Like).where(Like.update_id != None)).count(),
-#     }
+def get_analytics(db: Session) -> Analytics:
+    videos =  db.exec(select(Video)).all()
+    return Analytics(
+        total_views=sum(v.views for v in videos),
+        total_updates=db.exec(select(LiveUpdate)).all().count(),
+        total_videos=len(videos)
+    )
 
 
 def delete_event(db: Session, event_id: int) -> dict:
