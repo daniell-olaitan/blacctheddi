@@ -2,6 +2,7 @@ from sqlmodel import Session, select
 from app.storage.models import Admin, Event, LiveUpdate, Video, Comment, Like
 from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateCreate
+from fastapi import UploadFile
 
 
 def get_admin(db: Session, username: str) -> Admin | None:
@@ -26,7 +27,9 @@ def add_update(db: Session, event_id: int, update_data: LiveUpdateCreate) -> Liv
     return update
 
 
-def upload_video(db: Session, video: Video) -> Video:
+def upload_video(db: Session, title: str, file: UploadFile) -> Video:
+    # upload to storage to get url
+    video = Video(title=title, url='')
     db.add(video)
     db.commit()
     db.refresh(video)

@@ -5,6 +5,7 @@ from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateBase
 from app.schemas.comment import CommentBase
 from app.schemas.like import LikeBase
+from app.schemas.video import VideoBase
 
 settings = get_settings()
 engine = create_engine(settings.database_uri)
@@ -37,14 +38,9 @@ class LiveUpdate(LiveUpdateBase, table=True):
     likes: list["Like"] = Relationship(back_populates="update", cascade_delete=True)
 
 
-class Video(SQLModel, table=True):
+class Video(VideoBase, table=True):
     __tablename__ = 'videos'
-
     id: int | None = Field(default=None, primary_key=True)
-    title: str
-    views: int = 0
-    url: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     comments: list["Comment"] = Relationship(back_populates="video", cascade_delete=True)
     likes: list["Like"] = Relationship(back_populates="video", cascade_delete=True)

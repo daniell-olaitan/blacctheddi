@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.storage.database import create_db
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, admin, video, update, event
+from app.routers import auth, admin, video, update, event, like
 
 
 @asynccontextmanager
@@ -32,3 +32,4 @@ app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(video.router, prefix="/tvs", tags=["TV"])
 app.include_router(update.router, prefix="/updates", tags=["Live Update"])
 app.include_router(event.router, prefix="/events", tags=["Event"])
+app.include_router(like.router, prefix='/likes', tages=["Like"])

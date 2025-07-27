@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, Form, File
 from sqlmodel import Session
 from typing import Annotated
 
 from app.core.dependencies import verify_admin, get_db
 from app.crud import admin as admin_crud
-from app.storage.models import Video
+from app.schemas.video import VideoPublic
 from app.schemas.event import EventBase, EventPublic
 from app.schemas.update import LiveUpdateCreate, LiveUpdatePublic
 from app.schemas.comment import CommentPublic
@@ -30,10 +30,11 @@ def add_update_to_event(
 
 @router.post("/videos")
 def upload_video(
-    video: Video,
+    title: Annotated[str, Form()],
+    file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)]
-):
-    return admin_crud.upload_video(db, video)
+) -> VideoPublic:
+    return admin_crud.upload_video(db, title, file)
 
 
 @router.get("/updates/{update_id}/likes")

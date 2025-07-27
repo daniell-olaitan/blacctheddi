@@ -6,6 +6,7 @@ from app.crud import video as videos_crud
 from app.storage.models import Video
 from app.schemas.comment import CommentPublic
 from app.schemas.like import LikePublic
+from app.schemas.video import VideoCombined
 
 router = APIRouter()
 
@@ -21,7 +22,7 @@ def get_recent_videos(
 def get_video(
     video_id: int,
     db: Annotated[Session, Depends(get_db)]
-) -> Video:
+) -> VideoCombined:
     video = videos_crud.get_video_and_increment_views(db, video_id)
     if video:
         return video
