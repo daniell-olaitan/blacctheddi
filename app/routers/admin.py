@@ -22,10 +22,11 @@ def create_event(
 @router.post("/events/{event_id}/updates")
 def add_update_to_event(
     event_id: int,
-    update: LiveUpdateCreate,
+    update: Annotated[LiveUpdateCreate, Form()],
+    image_file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)]
 ) -> LiveUpdatePublic:
-    return admin_crud.add_update(db, event_id, update)
+    return admin_crud.add_update(db, event_id, update, image_file)
 
 
 @router.post("/videos")

@@ -16,7 +16,6 @@ class Admin(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str
     password: str
-    is_admin: bool = True
 
 
 class Event(EventBase, table=True):

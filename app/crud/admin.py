@@ -20,8 +20,19 @@ def create_event(db: Session, event: EventBase) -> Event:
     return event
 
 
-def add_update(db: Session, event_id: int, update_data: LiveUpdateCreate) -> LiveUpdate:
-    update = LiveUpdate(**update_data.model_dump(), event_id=event_id)
+def add_update(
+    db: Session,
+    event_id: int,
+    update_data: LiveUpdateCreate,
+    image_file: UploadFile
+) -> LiveUpdate:
+    image_url = store_file(image_file, 'images') if image_url else None
+    update = LiveUpdate(
+        **update_data.model_dump(),
+        event_id=event_id,
+        image_url=image_url
+    )
+
     db.add(update)
     db.commit()
     db.refresh(update)
