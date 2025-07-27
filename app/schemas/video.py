@@ -10,6 +10,7 @@ class VideoBase(SQLModel):
     views: int = 0
     url: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    thumbnail_url: str | None = None
 
 
 class VideoPublic(VideoBase):

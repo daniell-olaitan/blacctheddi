@@ -41,9 +41,15 @@ def add_update(
     return update
 
 
-def upload_video(db: Session, title: str, file: UploadFile) -> Video:
-    video_url = store_file(file)
-    video = Video(title=title, url=video_url)
+def upload_files(
+    db: Session,
+    title: str,
+    thumbnail: UploadFile,
+    video_file: UploadFile
+) -> Video:
+    thumbnail_url = store_file(thumbnail, 'images') if thumbnail else None
+    video_url = store_file(video_file)
+    video = Video(title=title, url=video_url, thumbnail_url=thumbnail_url)
     db.add(video)
     db.commit()
     db.refresh(video)

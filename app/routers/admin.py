@@ -32,10 +32,11 @@ def add_update_to_event(
 @router.post("/videos")
 def upload_video(
     title: Annotated[str, Form()],
-    file: Annotated[UploadFile, File()],
+    thumbnail: Annotated[UploadFile, File()],
+    video_file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)]
 ) -> VideoPublic:
-    return admin_crud.upload_video(db, title, file)
+    return admin_crud.upload_files(db, title, thumbnail, video_file)
 
 
 @router.get("/updates/{update_id}/likes")
