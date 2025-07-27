@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel
+from app.schemas.update import LiveUpdatePublic
 
 
 class EventBase(SQLModel):
@@ -8,3 +9,7 @@ class EventBase(SQLModel):
 
 class EventPublic(EventBase):
     id: int
+
+
+class EventPublicWithRel(EventPublic):
+    updates: list[LiveUpdatePublic]

@@ -4,8 +4,8 @@ from typing import Annotated
 
 from app.core.dependencies import get_db
 from app.crud import event as events_crud
-from app.schemas.event import EventPublic
-from app.schemas.update import LiveUpdatePublic
+from app.schemas.event import EventPublicWithRel
+from app.schemas.update import LiveUpdatePublicWithRel
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ router = APIRouter()
 @router.get("/")
 def list_events(
     db: Annotated[Session, Depends(get_db)]
-) -> list[EventPublic]:
+) -> list[EventPublicWithRel]:
     return events_crud.get_all_live_events(db)
 
 
@@ -21,5 +21,5 @@ def list_events(
 def get_event_updates(
     event_id: int,
     db: Annotated[Session, Depends(get_db)]
-) -> list[LiveUpdatePublic]:
+) -> list[LiveUpdatePublicWithRel]:
     return events_crud.get_updates_for_event(db, event_id)

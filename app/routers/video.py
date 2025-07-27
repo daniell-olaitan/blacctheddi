@@ -3,10 +3,9 @@ from sqlmodel import Session
 from typing import Annotated
 from app.core.dependencies import get_db
 from app.crud import video as videos_crud
-from app.storage.models import Video
 from app.schemas.comment import CommentPublic
 from app.schemas.like import LikePublic
-from app.schemas.video import VideoCombined
+from app.schemas.video import VideoCombined, VideoPublicWithRel
 
 router = APIRouter()
 
@@ -14,7 +13,7 @@ router = APIRouter()
 @router.get("/")
 def get_recent_videos(
     db: Annotated[Session, Depends(get_db)]
-) -> list[Video]:
+) -> list[VideoPublicWithRel]:
     return videos_crud.get_recent_videos(db)
 
 

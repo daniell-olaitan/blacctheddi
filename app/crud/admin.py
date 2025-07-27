@@ -4,6 +4,7 @@ from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateCreate
 from fastapi import UploadFile
 from app.schemas.common import StatusJSON
+from app.core.utils import store_file
 
 
 def get_admin(db: Session, username: str) -> Admin | None:
@@ -29,8 +30,8 @@ def add_update(db: Session, event_id: int, update_data: LiveUpdateCreate) -> Liv
 
 
 def upload_video(db: Session, title: str, file: UploadFile) -> Video:
-    # upload to storage to get url
-    video = Video(title=title, url='')
+    video_url = store_file(file)
+    video = Video(title=title, url=video_url)
     db.add(video)
     db.commit()
     db.refresh(video)

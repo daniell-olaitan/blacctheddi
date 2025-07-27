@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel, Field, create_engine, Relationship
 from config import get_settings
-from datetime import datetime, timezone
 from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateBase
 from app.schemas.comment import CommentBase
@@ -29,9 +28,7 @@ class Event(EventBase, table=True):
 
 class LiveUpdate(LiveUpdateBase, table=True):
     __tablename__ = 'liveupdates'
-
     id: int | None = Field(default=None, primary_key=True)
-    event_id: int = Field(foreign_key="events.id", ondelete='CASCADE')
 
     event: Event | None = Relationship(back_populates="updates")
     comments: list["Comment"] = Relationship(back_populates="update", cascade_delete=True)
@@ -48,10 +45,7 @@ class Video(VideoBase, table=True):
 
 class Comment(CommentBase, table=True):
     __tablename__ = 'comments'
-
     id: int | None = Field(default=None, primary_key=True)
-    update_id: int | None = Field(default=None, foreign_key="liveupdates.id", ondelete='CASCADE')
-    video_id: int | None = Field(default=None, foreign_key="videos.id", ondelete='CASCADE')
 
     update: LiveUpdate | None = Relationship(back_populates="comments")
     video: Video | None = Relationship(back_populates="comments")
@@ -59,10 +53,7 @@ class Comment(CommentBase, table=True):
 
 class Like(LikeBase, table=True):
     __tablename__ = 'likes'
-
     id: int | None = Field(default=None, primary_key=True)
-    update_id: int | None = Field(default=None, foreign_key="liveupdates.id", ondelete='CASCADE')
-    video_id: int | None = Field(default=None, foreign_key="videos.id", ondelete='CASCADE')
 
     update: LiveUpdate | None = Relationship(back_populates="likes")
     video: Video | None = Relationship(back_populates="likes")

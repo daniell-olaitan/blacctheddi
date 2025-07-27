@@ -5,6 +5,7 @@ from app.schemas.auth import Token
 from app.core.utils import create_access_token, verify_password
 from datetime import timedelta
 from sqlmodel import Session
+from app.schemas.common import StatusJSON
 from app.core.dependencies import get_admin, get_db
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -36,3 +37,10 @@ async def login_for_access_token(
     )
 
     return Token(access_token=access_token, token_type="bearer")
+
+
+# @router.post("/change-password")
+# async def login_for_access_token(
+#     password: str,
+#     db: Annotated[Session, Depends(get_db)],
+# ) -> StatusJSON:
