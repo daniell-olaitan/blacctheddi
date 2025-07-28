@@ -78,9 +78,8 @@ uploads/
 
 ## 📫 Contact
 
-**Daniel Olaitan**
-Software Developer
-[daniell.olaitan@gmail.com](mailto:daniell.olaitan@gmail.com)
+**Daniel Olaitan** | Software Developer<br>
+[daniell.olaitan@gmail.com](mailto:daniell.olaitan@gmail.com)<br>
 [Github](https://github.com/daniell-olaitan)
 
 
