@@ -10,7 +10,7 @@ from app.storage.database import engine
 from app.storage.models import Admin
 from sqlmodel import Session
 from app.crud.admin import get_admin
-from app.core.utils import get_settings
+from app.core.utils import get_settings, get_password_hash
 from fastapi.staticfiles import StaticFiles
 
 settings = get_settings()
@@ -26,7 +26,7 @@ async def lifespan(_: FastAPI):
     if not admin_user:
         admin_user = Admin(
             username=settings.admin_user,
-            password=settings.admin_pwd
+            password=get_password_hash(settings.admin_pwd)
         )
 
         db.add(admin_user)
@@ -41,10 +41,7 @@ os.makedirs("uploads/images", exist_ok=True)
 
 app = FastAPI(lifespan=lifespan)
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
+    "https://tvandlivepost.vercel.app"
 ]
 
 

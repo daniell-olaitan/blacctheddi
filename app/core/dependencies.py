@@ -46,3 +46,5 @@ async def verify_admin(
     admin = get_admin(db=db, username=username)
     if admin is None:
         raise credentials_exception
+
+    return admin

@@ -6,6 +6,10 @@ class Token(BaseModel):
     token_type: str
 
 
+class TokenFull(Token):
+    refresh_token: str
+
+
 class PWDReset(BaseModel):
-    username: str
-    password: str
+    old_password: str
+    new_password: str
