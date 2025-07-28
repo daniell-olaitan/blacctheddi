@@ -41,7 +41,8 @@ os.makedirs("uploads/images", exist_ok=True)
 
 app = FastAPI(lifespan=lifespan)
 origins = [
-    "https://tvandlivepost.vercel.app"
+    'https://tvandlivepost.vercel.app',
+    'http://localhost:3000'
 ]
 
 
