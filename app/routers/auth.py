@@ -6,7 +6,7 @@ from app.core.utils import create_access_token, verify_password, get_password_ha
 from datetime import timedelta
 from sqlmodel import Session
 from app.schemas.common import StatusJSON
-from app.core.dependencies import get_db
+from app.core.dependencies import get_db, verify_admin
 from app.crud.admin import get_admin
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -40,7 +40,7 @@ def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
-@router.post("/change-password")
+@router.post("/change-password", dependencies=[Depends(verify_admin)])
 def change_admin_password(
     user_details: PWDReset,
     db: Annotated[Session, Depends(get_db)],

@@ -19,7 +19,22 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     create_db()
+
+    # Create default admin if not available
+    db = Session(engine)
+    admin_user = get_admin(db, settings.admin_user)
+    if not admin_user:
+        admin_user = Admin(
+            username=settings.admin_user,
+            password=settings.admin_pwd
+        )
+
+        db.add(admin_user)
+        db.commit()
+        db.close()
+
     yield
+
 
 os.makedirs("uploads/videos", exist_ok=True)
 os.makedirs("uploads/images", exist_ok=True)
@@ -54,17 +69,3 @@ app.include_router(like.router, prefix='/likes', tags=["Like"])
 @app.get('/')
 def app_status() -> StatusJSON:
     return StatusJSON(status='active')
-
-
-# Create default admin if not available
-db = Session(engine)
-admin_user = get_admin(db, settings.admin_user)
-if not admin_user:
-    admin_user = Admin(
-        username=settings.admin_user,
-        password=settings.admin_pwd
-    )
-
-    db.add(admin_user)
-    db.commit()
-    db.close()

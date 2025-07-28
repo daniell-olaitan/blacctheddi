@@ -3,7 +3,7 @@ from sqlmodel import Session
 from typing import Annotated
 from app.core.dependencies import get_db
 from app.crud import video as videos_crud
-from app.schemas.comment import CommentPublic
+from app.schemas.comment import CommentPublic, CommentCreate
 from app.schemas.like import LikePublic
 from app.schemas.video import VideoCombined, VideoPublicWithRel
 
@@ -48,7 +48,7 @@ def get_video_views(
 @router.post("/{video_id}/comments")
 def comment_on_video(
     video_id: int,
-    content: Annotated[str, Body()],
+    content: CommentCreate,
     db: Annotated[Session, Depends(get_db)]
 ) -> CommentPublic:
     return videos_crud.comment_on_video(db, video_id, content)
