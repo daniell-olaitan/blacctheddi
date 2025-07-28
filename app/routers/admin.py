@@ -8,6 +8,7 @@ from app.schemas.event import EventBase, EventPublic
 from app.schemas.update import LiveUpdateCreate, LiveUpdatePublic
 from app.schemas.comment import CommentPublic
 from app.schemas.common import StatusJSON
+from app.schemas.admin import Analytics
 
 router = APIRouter(dependencies=[Depends(verify_admin)])
 
@@ -70,7 +71,7 @@ def get_video_comments(
 @router.get("/analytics")
 def get_the_analytics(
     db: Annotated[Session, Depends(get_db)]
-) -> dict:
+) -> Analytics:
     return admin_crud.get_analytics(db)
 
 
