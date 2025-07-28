@@ -2,8 +2,7 @@ import jwt
 
 from fastapi import Depends, APIRouter, HTTPException, status
 from typing import Annotated
-from fastapi.security import OAuth2PasswordRequestForm
-from app.schemas.auth import Token, PWDReset, TokenFull
+from app.schemas.auth import Token, PWDReset, TokenFull, LoginRequest
 from app.core.utils import create_token, verify_password, get_password_hash, get_settings
 from datetime import timedelta
 from sqlmodel import Session
@@ -21,17 +20,17 @@ settings = get_settings()
 
 @router.post("/login")
 def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    payload: LoginRequest,
     db: Annotated[Session, Depends(get_db)],
 ) -> TokenFull:
-    admin = get_admin(db=db, username=form_data.username)
+    admin = get_admin(db=db, username=payload.username)
     if not admin:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username"
         )
 
-    if not verify_password(form_data.password, admin.password):
+    if not verify_password(payload.password, admin.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password"
