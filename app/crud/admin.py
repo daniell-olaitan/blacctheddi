@@ -58,11 +58,11 @@ def upload_files(
 
 
 def get_like_count_for_update(db: Session, update_id: int) -> int:
-    return db.exec(select(Like).where(Like.update_id == update_id)).all().count()
+    return len(db.exec(select(Like).where(Like.update_id == update_id)).all())
 
 
 def get_like_count_for_video(db: Session, video_id: int) -> int:
-    return db.exec(select(Like).where(Like.video_id == video_id)).all().count()
+    return len(db.exec(select(Like).where(Like.video_id == video_id)).all())
 
 
 def get_comments_for_update(db: Session, update_id: int) -> list[Comment]:
@@ -77,7 +77,7 @@ def get_analytics(db: Session) -> Analytics:
     videos =  db.exec(select(Video)).all()
     return Analytics(
         total_views=sum(v.views for v in videos),
-        total_updates=db.exec(select(LiveUpdate)).all().count(),
+        total_updates=len(db.exec(select(LiveUpdate)).all()),
         total_videos=len(videos)
     )
 

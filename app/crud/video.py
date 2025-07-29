@@ -27,7 +27,7 @@ def get_video_and_increment_views(db: Session, video_id: int) -> dict:
 
 
 def get_like_count_for_video(db: Session, video_id: int) -> int:
-    return db.exec(select(Like).where(Like.video_id == video_id)).all().count()
+    return len(db.exec(select(Like).where(Like.video_id == video_id)).all())
 
 
 def get_view_count_for_video(db: Session, video_id: int) -> int:
