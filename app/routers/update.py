@@ -20,12 +20,26 @@ def comment_on_update(
     return updates_crud.comment_on_update(db, update_id, content)
 
 
+@router.get("/{update_id}/comments")
+def get_update_comments(
+    update_id: int, db: Annotated[Session, Depends(get_db)]
+) -> list[CommentPublic]:
+    return updates_crud.get_comments_for_update(db, update_id)
+
+
 @router.post("/{update_id}/likes")
 def like_update(
     update_id: int,
     db: Annotated[Session, Depends(get_db)]
 ) -> LikePublic:
     return updates_crud.like_update(db, update_id)
+
+
+@router.get("/{update_id}/likes")
+def get_update_likes(
+    update_id: int, db: Annotated[Session, Depends(get_db)]
+) -> int:
+    return updates_crud.get_like_count_for_update(db, update_id)
 
 
 @router.get('/recent')

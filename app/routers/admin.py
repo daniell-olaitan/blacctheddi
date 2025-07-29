@@ -42,34 +42,6 @@ def upload_video(
     return admin_crud.upload_files(db, title, thumbnail, video_file)
 
 
-@router.get("/updates/{update_id}/likes")
-def get_update_likes(
-    update_id: int, db: Annotated[Session, Depends(get_db)]
-) -> int:
-    return admin_crud.get_like_count_for_update(db, update_id)
-
-
-@router.get("/videos/{video_id}/likes")
-def get_video_likes(
-    video_id: int, db: Annotated[Session, Depends(get_db)]
-) -> int:
-    return admin_crud.get_like_count_for_video(db, video_id)
-
-
-@router.get("/updates/{update_id}/comments")
-def get_update_comments(
-    update_id: int, db: Annotated[Session, Depends(get_db)]
-) -> list[CommentPublic]:
-    return admin_crud.get_comments_for_update(db, update_id)
-
-
-@router.get("/videos/{video_id}/comments")
-def get_video_comments(
-    video_id: int, db: Annotated[Session, Depends(get_db)]
-) -> list[CommentPublic]:
-    return admin_crud.get_comments_for_video(db, video_id)
-
-
 @router.get("/analytics")
 def get_the_analytics(
     db: Annotated[Session, Depends(get_db)]

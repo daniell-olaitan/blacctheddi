@@ -27,3 +27,11 @@ def like_update(db: Session, update_id: int) -> dict:
 
 def get_recent_updates(db: Session) -> list[LiveUpdate]:
     return db.exec(select(LiveUpdate).order_by(LiveUpdate.timestamp.desc())).all()[:3]
+
+
+def get_like_count_for_update(db: Session, update_id: int) -> int:
+    return len(db.exec(select(Like).where(Like.update_id == update_id)).all())
+
+
+def get_comments_for_update(db: Session, update_id: int) -> list[Comment]:
+    return db.exec(select(Comment).where(Comment.update_id == update_id)).all()

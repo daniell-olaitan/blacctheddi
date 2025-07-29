@@ -36,14 +36,6 @@ def get_video(
     raise HTTPException(status_code=404, detail="Video not found")
 
 
-@router.get("/{video_id}/likes")
-def get_video_likes(
-    video_id: int,
-    db: Annotated[Session, Depends(get_db)]
-) -> int:
-    return videos_crud.get_like_count_for_video(db, video_id)
-
-
 @router.get("/{video_id}/views")
 def get_video_views(
     video_id: int,
@@ -61,9 +53,24 @@ def comment_on_video(
     return videos_crud.comment_on_video(db, video_id, content)
 
 
+
+@router.get("/{video_id}/comments")
+def get_video_comments(
+    video_id: int, db: Annotated[Session, Depends(get_db)]
+) -> list[CommentPublic]:
+    return videos_crud.get_comments_for_video(db, video_id)
+
+
 @router.post("/{video_id}/likes")
 def like_video(
     video_id: int,
     db: Annotated[Session, Depends(get_db)]
 ) -> LikePublic:
     return videos_crud.like_video(db, video_id)
+
+
+@router.get("/{video_id}/likes")
+def get_video_likes(
+    video_id: int, db: Annotated[Session, Depends(get_db)]
+) -> int:
+    return videos_crud.get_like_count_for_video(db, video_id)

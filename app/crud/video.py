@@ -63,3 +63,11 @@ def like_video(db: Session, video_id: int) -> dict:
     db.commit()
 
     return like
+
+
+def get_comments_for_video(db: Session, video_id: int) -> list[Comment]:
+    return db.exec(select(Comment).where(Comment.video_id == video_id)).all()
+
+
+def get_like_count_for_video(db: Session, video_id: int) -> int:
+    return len(db.exec(select(Like).where(Like.video_id == video_id)).all())

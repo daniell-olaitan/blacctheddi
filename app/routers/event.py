@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session
 from typing import Annotated
 
@@ -20,6 +20,8 @@ def list_events(
 @router.get("/{event_id}/updates")
 def get_event_updates(
     event_id: int,
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 10,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> list[LiveUpdatePublicWithRel]:
-    return events_crud.get_updates_for_event(db, event_id)
+    return events_crud.get_updates_for_event(db, event_id, limit, offset)
