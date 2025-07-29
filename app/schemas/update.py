@@ -1,8 +1,11 @@
 from sqlmodel import SQLModel, Field
 from datetime import timezone, datetime
-from app.schemas.like import LikePublic
-from app.schemas.comment import CommentPublic
-from app.schemas.event import EventPublic
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.event import EventPublic
+    from app.schemas.like import LikePublic
+    from app.schemas.comment import CommentPublic
 
 
 class LiveUpdateCreate(SQLModel):
@@ -21,9 +24,9 @@ class LiveUpdatePublic(LiveUpdateBase):
 
 
 class LiveUpdatePublicWithRel(LiveUpdatePublic):
-    comments: list[CommentPublic]
-    likes: list[LikePublic]
+    comments: list["CommentPublic"]
+    likes: list["LikePublic"]
 
 
 class LiveUpdatePublicWithEvent(LiveUpdatePublicWithRel):
-    event: EventPublic
+    event: "EventPublic"
