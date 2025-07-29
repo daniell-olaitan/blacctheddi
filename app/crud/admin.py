@@ -27,7 +27,7 @@ def add_update(
     update_data: LiveUpdateCreate,
     image_file: UploadFile
 ) -> LiveUpdate:
-    image_url = store_file(image_file, 'images') if image_url else None
+    image_url = store_file(image_file, 'images') if image_file else None
     update = LiveUpdate(
         **update_data.model_dump(),
         event_id=event_id,
