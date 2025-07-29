@@ -1,8 +1,5 @@
 from sqlmodel import SQLModel
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from app.schemas.update import LiveUpdatePublic
+from app.schemas.update import LiveUpdatePublic, LiveUpdatePublicWithRel
 
 
 class EventBase(SQLModel):
@@ -15,4 +12,8 @@ class EventPublic(EventBase):
 
 
 class EventPublicWithRel(EventPublic):
-    updates: list["LiveUpdatePublic"]
+    updates: list[LiveUpdatePublic]
+
+
+class LiveUpdatePublicWithEvent(LiveUpdatePublicWithRel):
+    event: EventPublic

@@ -25,5 +25,5 @@ def like_update(db: Session, update_id: int) -> dict:
     return like
 
 
-def get_recent_videos(db: Session) -> list[LiveUpdate]:
+def get_recent_updates(db: Session) -> list[LiveUpdate]:
     return db.exec(select(LiveUpdate).order_by(LiveUpdate.timestamp.desc())).all()[:3]

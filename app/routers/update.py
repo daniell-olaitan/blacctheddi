@@ -6,7 +6,7 @@ from app.core.dependencies import get_db
 from app.crud import update as updates_crud
 from app.schemas.comment import CommentPublic, CommentCreate
 from app.schemas.like import LikePublic
-from app.schemas.update import LiveUpdatePublicWithEvent
+from app.schemas.event import LiveUpdatePublicWithEvent
 
 router = APIRouter()
 
