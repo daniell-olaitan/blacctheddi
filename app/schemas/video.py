@@ -14,7 +14,7 @@ class VideoBase(SQLModel):
 
 
 class VideoPublic(VideoBase):
-    id: str
+    id: int
 
 
 class VideoPublicWithRel(VideoPublic):

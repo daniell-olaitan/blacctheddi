@@ -1,6 +1,7 @@
-from sqlmodel import Session
+from sqlmodel import Session, select
 from app.storage.models import Comment, Like
 from app.schemas.comment import CommentBase
+from app.storage.models import LiveUpdate
 
 
 def comment_on_update(
@@ -22,3 +23,7 @@ def like_update(db: Session, update_id: int) -> dict:
     db.commit()
 
     return like
+
+
+def get_recent_videos(db: Session) -> list[LiveUpdate]:
+    return db.exec(select(LiveUpdate).order_by(LiveUpdate.timestamp.desc())).all()[:3]

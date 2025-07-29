@@ -6,6 +6,7 @@ from app.core.dependencies import get_db
 from app.crud import update as updates_crud
 from app.schemas.comment import CommentPublic, CommentCreate
 from app.schemas.like import LikePublic
+from app.schemas.update import LiveUpdatePublicWithEvent
 
 router = APIRouter()
 
@@ -25,3 +26,10 @@ def like_update(
     db: Annotated[Session, Depends(get_db)]
 ) -> LikePublic:
     return updates_crud.like_update(db, update_id)
+
+
+@router.get('/recent')
+def fetch_recent_updates(
+    db: Annotated[Session, Depends(get_db)]
+) -> list[LiveUpdatePublicWithEvent]:
+    return updates_crud.get_recent_updates(db)

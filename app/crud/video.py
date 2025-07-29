@@ -4,6 +4,10 @@ from app.schemas.comment import CommentBase
 
 
 def get_recent_videos(db: Session) -> list[Video]:
+    return db.exec(select(Video).order_by(Video.timestamp.desc())).all()[:3]
+
+
+def get_all_videos(db: Session) -> list[Video]:
     return db.exec(select(Video).order_by(Video.timestamp.desc())).all()
 
 

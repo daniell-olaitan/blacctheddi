@@ -11,7 +11,14 @@ router = APIRouter()
 
 
 @router.get("/")
-def get_recent_videos(
+def get_all_videos(
+    db: Annotated[Session, Depends(get_db)]
+) -> list[VideoPublicWithRel]:
+    return videos_crud.get_all_videos(db)
+
+
+@router.get('/recent')
+def fetch_recent_videos(
     db: Annotated[Session, Depends(get_db)]
 ) -> list[VideoPublicWithRel]:
     return videos_crud.get_recent_videos(db)
