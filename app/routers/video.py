@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session
 from typing import Annotated
 from app.core.dependencies import get_db
@@ -10,11 +10,27 @@ from app.schemas.video import VideoCombined, VideoPublicWithRel
 router = APIRouter()
 
 
-@router.get("/")
-def get_all_videos(
-    db: Annotated[Session, Depends(get_db)]
+@router.get(
+    "/ungrouped",
+    description="Returns a flat list of videos. You can optionally filter by a list of category IDs."
+)
+def get_ungrouped_videos(
+    db: Annotated[Session, Depends(get_db)],
+    category_ids: Annotated[list[int] | None, Query(description="Category IDs to group by")] = None,
 ) -> list[VideoPublicWithRel]:
-    return videos_crud.get_all_videos(db)
+    return videos_crud.get_videos(db, category_ids, group_by_category=False)
+
+
+@router.get(
+    "/grouped",
+    summary="Get videos grouped by category",
+    description="Returns a dictionary of videos grouped under their respective category names. If no category_ids are provided, all categories will be used."
+)
+def get_grouped_videos(
+    db: Annotated[Session, Depends(get_db)],
+    category_ids: Annotated[list[int] | None, Query(description="Category IDs to group by")] = None,
+) -> dict[str, list[VideoPublicWithRel]]:
+    return videos_crud.get_videos(db, category_ids, group_by_category=True)
 
 
 @router.get('/recent')
@@ -25,7 +41,7 @@ def fetch_recent_videos(
 
 
 @router.get("/{video_id}")
-def get_video(
+def get_a_video(
     video_id: int,
     db: Annotated[Session, Depends(get_db)]
 ) -> VideoCombined:

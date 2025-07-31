@@ -4,6 +4,10 @@ from app.schemas.comment import CommentBase
 from app.storage.models import LiveUpdate
 
 
+def get_update(db: Session, update_id: int) -> list[LiveUpdate]:
+    return db.get(LiveUpdate, update_id)
+
+
 def comment_on_update(
     db: Session,
     update_id: int,

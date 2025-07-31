@@ -4,8 +4,7 @@ from typing import Annotated
 
 from app.core.dependencies import get_db
 from app.crud import event as events_crud
-from app.schemas.event import EventPublicWithRel
-from app.schemas.update import LiveUpdatePublicWithRel
+from app.schemas.event import EventPublicWithRel, LiveUpdatePublicWithEvent
 
 router = APIRouter()
 
@@ -23,5 +22,5 @@ def get_event_updates(
     db: Annotated[Session, Depends(get_db)],
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
     offset: Annotated[int, Query(ge=0)] = 0,
-) -> list[LiveUpdatePublicWithRel]:
+) -> list[LiveUpdatePublicWithEvent]:
     return events_crud.get_updates_for_event(db, event_id, limit, offset)

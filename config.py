@@ -18,6 +18,19 @@ class Settings(BaseSettings):
     r2_public_url: str
     admin_user: str
     admin_pwd: str
+    video_categories: list[str] = [
+        "New Releases",
+        "Comedy & Satire",
+        "News & Affairs",
+        "Documentaries & Features",
+        "Short Films",
+        "Docu series",
+        "Movies",
+        "Entertainment",
+        "Comedy",
+        "Innovations",
+        "Blog companion"
+    ]
 
     model_config = (
         SettingsConfigDict(env_file='.env')

@@ -1,14 +1,57 @@
 from sqlmodel import Session, select
-from app.storage.models import Video, Comment, Like
+from app.storage.models import Video, Comment, Like, VideoCategoryLink, Category
 from app.schemas.comment import CommentBase
+from config import get_settings
+from sqlalchemy.orm import selectinload
+
+settings = get_settings()
 
 
 def get_recent_videos(db: Session) -> list[Video]:
     return db.exec(select(Video).order_by(Video.timestamp.desc())).all()[:3]
 
 
-def get_all_videos(db: Session) -> list[Video]:
-    return db.exec(select(Video).order_by(Video.timestamp.desc())).all()
+def get_videos(
+    db: Session,
+    category_ids: list[int],
+    group_by_category: bool
+) -> list[Video] | dict[str, list[Video]]:
+    if group_by_category:
+        if not category_ids:
+            category_ids = settings.video_categories
+
+        # Eager load videos for the categories
+        stmt = (
+            select(Category)
+            .where(Category.id.in_(category_ids))
+            .options(selectinload(Category.videos))
+        )
+        categories = db.exec(stmt).all()
+
+        videos = {
+            category.name: sorted(
+                category.videos,
+                key=lambda v: v.timestamp,
+                reverse=True
+            )
+            for category in categories
+        }
+
+        return videos
+
+    else:
+        if category_ids:
+            stmt = (
+                select(Video)
+                .join(VideoCategoryLink, Video.id == VideoCategoryLink.video_id)
+                .where(VideoCategoryLink.category_id.in_(category_ids))
+                .order_by(Video.timestamp.desc())
+                .distinct()
+            )
+        else:
+            stmt = select(Video).order_by(Video.timestamp.desc())
+
+        return db.exec(stmt).all()
 
 
 def get_video_and_increment_views(db: Session, video_id: int) -> dict:

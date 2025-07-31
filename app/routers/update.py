@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from typing import Annotated
 
@@ -9,6 +9,18 @@ from app.schemas.like import LikePublic
 from app.schemas.event import LiveUpdatePublicWithEvent
 
 router = APIRouter()
+
+
+@router.get("/{update_id}")
+def get_event_update(
+    update_id: int,
+    db: Annotated[Session, Depends(get_db)],
+) -> LiveUpdatePublicWithEvent:
+    update = updates_crud.get_update(db, update_id)
+    if update:
+        return update
+
+    raise HTTPException(status_code=404, detail="Live update not found")
 
 
 @router.post("/{update_id}/comments")

@@ -19,19 +19,6 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     create_db()
-    categories = [
-        "New Releases",
-        "Comedy & Satire",
-        "News & Affairs",
-        "Documentaries & Features",
-        "Short Films",
-        "Docu series",
-        "Movies",
-        "Entertainment",
-        "Comedy",
-        "Innovations",
-        "Blog companion"
-    ]
 
     # Create default admin if not available
     db = Session(engine)
@@ -45,7 +32,7 @@ async def lifespan(_: FastAPI):
         db.add(admin_user)
 
     # Create Video Categories if not already existed
-    for name in categories:
+    for name in settings.video_categories:
         if not db.exec(select(Category).where(Category.name == name)).first():
             db.add(Category(name=name))
 
@@ -63,7 +50,6 @@ origins = [
     'https://tvandlivepost.vercel.app',
     'http://localhost:3000'
 ]
-
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 app.add_middleware(
