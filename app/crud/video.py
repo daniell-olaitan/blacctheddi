@@ -18,7 +18,7 @@ def get_videos(
 ) -> list[Video] | dict[str, list[Video]]:
     if group_by_category:
         if not category_ids:
-            category_ids = settings.video_categories
+            category_ids = [cat.id for cat in db.exec(select(Category)).all()]
 
         # Eager load videos for the categories
         stmt = (
