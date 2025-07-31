@@ -53,7 +53,6 @@ def comment_on_video(
     return videos_crud.comment_on_video(db, video_id, content)
 
 
-
 @router.get("/{video_id}/comments")
 def get_video_comments(
     video_id: int, db: Annotated[Session, Depends(get_db)]

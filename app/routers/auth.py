@@ -84,4 +84,7 @@ def change_admin_password(
         db.commit()
 
         return StatusJSON(status='ok')
-    return StatusJSON(status='error')
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail='Incorrect old password'
+    )

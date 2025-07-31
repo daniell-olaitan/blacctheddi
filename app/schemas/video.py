@@ -7,6 +7,7 @@ from app.schemas.comment import CommentPublic
 
 class VideoBase(SQLModel):
     title: str
+    description: str
     views: int = 0
     url: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
