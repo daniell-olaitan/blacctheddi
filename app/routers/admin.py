@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, Form, File
+from fastapi import APIRouter, Depends, UploadFile, Form, File, HTTPException
 from sqlmodel import Session
 from typing import Annotated
 from app.core.dependencies import verify_admin, get_db
@@ -35,11 +35,23 @@ def add_update_to_event(
 @router.post("/videos")
 def upload_video(
     title: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    category_ids: Annotated[list[int], Form()],
     thumbnail: Annotated[UploadFile, File()],
     video_file: Annotated[UploadFile, File()],
     db: Annotated[Session, Depends(get_db)]
 ) -> VideoPublic:
-    return admin_crud.upload_files(db, title, thumbnail, video_file)
+    categories = admin_crud.validate_category_ids(db, category_ids)
+    if categories is None:
+        raise HTTPException(status_code=400, detail="Some category IDs are invalid.")
+
+    video_data = {
+        'title': title,
+        'description': description,
+        'categories': categories
+    }
+
+    return admin_crud.upload_files(db, video_data, thumbnail, video_file)
 
 
 @router.get("/analytics")

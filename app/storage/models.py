@@ -5,9 +5,15 @@ from app.schemas.update import LiveUpdateBase
 from app.schemas.comment import CommentBase
 from app.schemas.like import LikeBase
 from app.schemas.video import VideoBase
+from app.schemas.category import CategoryBase
 
 settings = get_settings()
 engine = create_engine(settings.database_uri)
+
+
+class VideoCategoryLink(SQLModel, table=True):
+    video_id: int | None = Field(default=None, foreign_key="videos.id", primary_key=True)
+    category_id: int | None = Field(default=None, foreign_key="categories.id", primary_key=True)
 
 
 class Admin(SQLModel, table=True):
@@ -40,6 +46,14 @@ class Video(VideoBase, table=True):
 
     comments: list["Comment"] = Relationship(back_populates="video", cascade_delete=True)
     likes: list["Like"] = Relationship(back_populates="video", cascade_delete=True)
+    categories: list["Category"] = Relationship(back_populates="videos", link_model=VideoCategoryLink)
+
+
+class Category(CategoryBase, table=True):
+    __tablename__ = 'categories'
+    id: int | None = Field(default=None, primary_key=True)
+
+    videos: list["Video"] = Relationship(back_populates="categories", link_model=VideoCategoryLink)
 
 
 class Comment(CommentBase, table=True):

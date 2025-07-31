@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.storage.models import Admin, Event, LiveUpdate, Video, Comment, Like
+from app.storage.models import Admin, Event, LiveUpdate, Video, Category, VideoCategoryLink
 from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateCreate
 from fastapi import UploadFile
@@ -10,6 +10,17 @@ from app.core.utils import store_file
 
 def get_admin(db: Session, username: str) -> Admin | None:
     return db.exec(select(Admin).where(Admin.username == username)).first()
+
+
+def validate_category_ids(db: Session, ids: list) -> list[Category] | None:
+    categories = db.exec(
+        select(Category).where(Category.id.in_(ids))
+    ).all()
+
+    if len(categories) == len(set(ids)):
+        return categories
+
+    return None
 
 
 def create_event(db: Session, event: EventBase) -> Event:
@@ -43,14 +54,27 @@ def add_update(
 
 def upload_files(
     db: Session,
-    title: str,
+    video_data: dict,
     thumbnail: UploadFile,
     video_file: UploadFile
 ) -> Video:
     thumbnail_url = store_file(thumbnail, 'images') if thumbnail else None
     video_url = store_file(video_file)
-    video = Video(title=title, url=video_url, thumbnail_url=thumbnail_url)
+    video = Video(
+        title=video_data['title'],
+        description=video_data['description'],
+        url=video_url,
+        thumbnail_url=thumbnail_url
+    )
+
     db.add(video)
+    db.commit()
+    db.refresh(video)
+
+    for cat in video_data['categories']:
+        link = VideoCategoryLink(video_id=video.id, category_id=cat.id)
+        db.add(link)
+
     db.commit()
     db.refresh(video)
 

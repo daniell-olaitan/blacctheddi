@@ -4,11 +4,11 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.storage.database import create_db
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, admin, video, update, event, like
+from app.routers import auth, admin, video, update, event, like, category
 from app.schemas.common import StatusJSON
 from app.storage.database import engine
-from app.storage.models import Admin
-from sqlmodel import Session
+from app.storage.models import Admin, Category
+from sqlmodel import Session, select
 from app.crud.admin import get_admin
 from app.core.utils import get_settings, get_password_hash
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +19,19 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     create_db()
+    categories = [
+        "New Releases",
+        "Comedy & Satire",
+        "News & Affairs",
+        "Documentaries & Features",
+        "Short Films",
+        "Docu series",
+        "Movies",
+        "Entertainment",
+        "Comedy",
+        "Innovations",
+        "Blog companion"
+    ]
 
     # Create default admin if not available
     db = Session(engine)
@@ -30,8 +43,14 @@ async def lifespan(_: FastAPI):
         )
 
         db.add(admin_user)
-        db.commit()
-        db.close()
+
+    # Create Video Categories if not already existed
+    for name in categories:
+        if not db.exec(select(Category).where(Category.name == name)).first():
+            db.add(Category(name=name))
+
+    db.commit()
+    db.close()
 
     yield
 
@@ -61,6 +80,7 @@ app.include_router(video.router, prefix="/tvs", tags=["TV"])
 app.include_router(update.router, prefix="/updates", tags=["Live Update"])
 app.include_router(event.router, prefix="/events", tags=["Event"])
 app.include_router(like.router, prefix='/likes', tags=["Like"])
+app.include_router(category.router, prefix='/categories', tags=["Category"])
 
 
 # Check API status
