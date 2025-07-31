@@ -11,6 +11,13 @@ from app.schemas.event import LiveUpdatePublicWithEvent
 router = APIRouter()
 
 
+@router.get('/recent')
+def fetch_recent_updates(
+    db: Annotated[Session, Depends(get_db)]
+) -> list[LiveUpdatePublicWithEvent]:
+    return updates_crud.get_recent_updates(db)
+
+
 @router.get("/{update_id}")
 def get_event_update(
     update_id: int,
@@ -52,10 +59,3 @@ def get_update_likes(
     update_id: int, db: Annotated[Session, Depends(get_db)]
 ) -> int:
     return updates_crud.get_like_count_for_update(db, update_id)
-
-
-@router.get('/recent')
-def fetch_recent_updates(
-    db: Annotated[Session, Depends(get_db)]
-) -> list[LiveUpdatePublicWithEvent]:
-    return updates_crud.get_recent_updates(db)
