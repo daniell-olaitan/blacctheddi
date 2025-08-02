@@ -4,9 +4,8 @@ from typing import Annotated
 from app.core.dependencies import verify_admin, get_db
 from app.crud import admin as admin_crud
 from app.schemas.video import VideoPublic
-from app.schemas.event import EventBase, EventPublic
+from app.schemas.event import EventCreate, EventPublic
 from app.schemas.update import LiveUpdateCreate, LiveUpdatePublic
-from app.schemas.comment import CommentPublic
 from app.schemas.common import StatusJSON
 from app.schemas.admin import Analytics
 
@@ -15,9 +14,13 @@ router = APIRouter(dependencies=[Depends(verify_admin)])
 
 @router.post("/events")
 def create_event(
-    event: EventBase, db: Annotated[Session, Depends(get_db)]
+    title: Annotated[str, Form()],
+    details: Annotated[str, Form()],
+    db: Annotated[Session, Depends(get_db)],
+    image_file: Annotated[UploadFile | None, File()] = None,
 ) -> EventPublic:
-    return admin_crud.create_event(db, event)
+    event = EventCreate(title=title, details=details)
+    return admin_crud.create_event(db, event, image_file)
 
 
 @router.post("/events/{event_id}/updates")

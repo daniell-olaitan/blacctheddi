@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from app.storage.models import Video, Comment, Like, VideoCategoryLink, Category
-from app.schemas.comment import CommentBase
+from app.schemas.comment import CommentCreate
 from config import get_settings
 from sqlalchemy.orm import selectinload
 
@@ -90,7 +90,7 @@ def get_related_videos(db: Session, video_id: int) -> list[Video]:
 def comment_on_video(
     db: Session,
     video_id: int,
-    content_data: CommentBase
+    content_data: CommentCreate
 ) -> Comment:
     comment = Comment(**content_data.model_dump(), video_id=video_id)
     db.add(comment)
@@ -100,7 +100,7 @@ def comment_on_video(
     return comment
 
 
-def like_video(db: Session, video_id: int) -> dict:
+def like_video(db: Session, video_id: int) -> Like:
     like = Like(video_id=video_id)
     db.add(like)
     db.commit()

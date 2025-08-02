@@ -29,6 +29,8 @@ class Event(EventBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
     updates: list["LiveUpdate"] = Relationship(back_populates="event", cascade_delete=True)
+    comments: list["Comment"] = Relationship(back_populates="event", cascade_delete=True)
+    likes: list["Like"] = Relationship(back_populates="event", cascade_delete=True)
 
 
 class LiveUpdate(LiveUpdateBase, table=True):
@@ -61,6 +63,7 @@ class Comment(CommentBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
     update: LiveUpdate | None = Relationship(back_populates="comments")
+    event: Event | None = Relationship(back_populates="comments")
     video: Video | None = Relationship(back_populates="comments")
 
 
@@ -68,5 +71,6 @@ class Like(LikeBase, table=True):
     __tablename__ = 'likes'
     id: int | None = Field(default=None, primary_key=True)
 
+    event: Event | None = Relationship(back_populates="likes")
     update: LiveUpdate | None = Relationship(back_populates="likes")
     video: Video | None = Relationship(back_populates="likes")

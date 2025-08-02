@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from app.storage.models import Admin, Event, LiveUpdate, Video, Category, VideoCategoryLink
-from app.schemas.event import EventBase
+from app.schemas.event import EventCreate
 from app.schemas.update import LiveUpdateCreate
 from fastapi import UploadFile
 from app.schemas.common import StatusJSON
@@ -23,8 +23,17 @@ def validate_category_ids(db: Session, ids: list) -> list[Category] | None:
     return None
 
 
-def create_event(db: Session, event: EventBase) -> Event:
-    event = Event.model_validate(event)
+def create_event(
+    db: Session,
+    event_data: EventCreate,
+    image_file: UploadFile
+) -> Event:
+    image_url = store_file(image_file, 'images') if image_file else None
+    event = Event(
+        **event_data.model_dump(),
+        image_url=image_url
+    )
+
     db.add(event)
     db.commit()
     db.refresh(event)
