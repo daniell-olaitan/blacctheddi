@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from sqlalchemy import Text
 from datetime import timezone, datetime
 from app.schemas.like import LikePublic
 from app.schemas.comment import CommentPublic
@@ -6,7 +7,7 @@ from app.schemas.comment import CommentPublic
 
 class LiveUpdateCreate(SQLModel):
     title: str
-    details: str
+    details: str = Field(sa_column=Text)
 
 
 class LiveUpdateBase(LiveUpdateCreate):

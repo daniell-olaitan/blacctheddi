@@ -1,9 +1,10 @@
 from sqlmodel import SQLModel, Field
+from sqlalchemy import Text
 from datetime import timezone, datetime
 
 
 class CommentCreate(SQLModel):
-    content: str
+    content: str = Field(sa_column=Text)
 
 
 class CommentBase(CommentCreate):
