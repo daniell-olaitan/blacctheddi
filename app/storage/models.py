@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field, create_engine, Relationship
+from sqlalchemy import Column, TEXT
 from config import get_settings
 from app.schemas.event import EventBase
 from app.schemas.update import LiveUpdateBase
@@ -26,7 +27,9 @@ class Admin(SQLModel, table=True):
 
 class Event(EventBase, table=True):
     __tablename__ = 'events'
+
     id: int | None = Field(default=None, primary_key=True)
+    details: str = Field(sa_column=Column(TEXT, nullable=False))
 
     updates: list["LiveUpdate"] = Relationship(back_populates="event", cascade_delete=True)
     comments: list["Comment"] = Relationship(back_populates="event", cascade_delete=True)
@@ -35,7 +38,9 @@ class Event(EventBase, table=True):
 
 class LiveUpdate(LiveUpdateBase, table=True):
     __tablename__ = 'liveupdates'
+
     id: int | None = Field(default=None, primary_key=True)
+    details: str = Field(sa_column=Column(TEXT, nullable=False))
 
     event: Event | None = Relationship(back_populates="updates")
     comments: list["Comment"] = Relationship(back_populates="update", cascade_delete=True)
@@ -44,7 +49,9 @@ class LiveUpdate(LiveUpdateBase, table=True):
 
 class Video(VideoBase, table=True):
     __tablename__ = 'videos'
+
     id: int | None = Field(default=None, primary_key=True)
+    description: str = Field(sa_column=Column(TEXT, nullable=False))
 
     comments: list["Comment"] = Relationship(back_populates="video", cascade_delete=True)
     likes: list["Like"] = Relationship(back_populates="video", cascade_delete=True)
@@ -60,7 +67,9 @@ class Category(CategoryBase, table=True):
 
 class Comment(CommentBase, table=True):
     __tablename__ = 'comments'
+
     id: int | None = Field(default=None, primary_key=True)
+    content: str = Field(sa_column=Column(TEXT, nullable=False))
 
     update: LiveUpdate | None = Relationship(back_populates="comments")
     event: Event | None = Relationship(back_populates="comments")

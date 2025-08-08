@@ -1,5 +1,4 @@
 from sqlmodel import SQLModel, Field
-from sqlalchemy import Text
 from datetime import timezone, datetime
 from pydantic import BaseModel
 from app.schemas.like import LikePublic
@@ -9,7 +8,7 @@ from app.schemas.category import CategoryPublic
 
 class VideoBase(SQLModel):
     title: str
-    description: str = Field(sa_column=Text)
+    description: str
     views: int = 0
     url: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
